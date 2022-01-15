@@ -20,7 +20,7 @@ services:
             - ${APP_PORT}:${APP_PORT}
         networks:
             - default
-            - mzgroup
+            - nmb
 
     db:
         container_name: db
@@ -38,12 +38,12 @@ services:
             - ${DB_PORT}:5432
         networks:
             - default
-            - mzgroup
+            - nmb
 
 
 networks:
   default:
-    name: mzgroup
+    name: nmb
     driver: bridge
-  mzgroup:
+  nmb:
     external: true
