@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+    web:
+        container_name: web
+        build:
+            context: ../
+            dockerfile: ./docker/nodejs/Dockerfile
+            target: ${APP_ENV}
+        env_file:
+            - ../.env-${APP_ENV}
+        volumes:
+            - ../application:/usr/src/app/application
+            - /usr/src/app/application/node_modules
+        depends_on:
+            - db
+        links:
+            - db
+        ports:
+            - ${APP_PORT}:${APP_PORT}
+        networks:
+            - default
+            - mzgroup
+
+    db:
+        container_name: db
+        build:
+            context: ../
+            dockerfile: ./docker/postgres/Dockerfile
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_DATABASE}
+        volumes:
+            - ./postgres/volume:/data/postgres
+        ports:
+            - ${DB_PORT}:5432
+        networks:
+            - default
+            - mzgroup
+
+
+networks:
+  default:
+    name: mzgroup
+    driver: bridge
+  mzgroup:
+    external: true
